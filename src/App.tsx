@@ -19,6 +19,12 @@ class App extends React.Component<{}, AppState> {
     this.setState({selected_flight: option})
   }
 
+  flight_data = {'1' : {duration: 60}, '2': {duration: 75}, '3': {duration: 100}};
+
+  get_flight_info = (flight_id: string) => {
+    return this.flight_data[flight_id];
+  }
+
   render() {
     return (
       <div className="App">
@@ -29,6 +35,7 @@ class App extends React.Component<{}, AppState> {
         <div className="App-wrapper">
         <MapPanel selected_flight = {this.state.selected_flight}  />
         <InfoPanel selected_flight = {this.state.selected_flight} handle_flight_change={this.handle_flight_change} />
+        <GeneralInfo selected_flight = {this.state.selected_flight} get_fight_info = {this.get_fight_info} />
         </div>
         <footer className="App-footer">Built by <a href="https://stac.berkeley.edu">Space Technologies at Cal</a>, 2019</footer>
       </div>
@@ -50,13 +57,31 @@ class InfoPanel extends React.Component<InfoPanelProps> {
   render() {
     return (
     <div className="info-panel">
-      <h3>Track flight stats</h3> 
-      <Dropdown className="flight-dropdown" 
-      options={this.options} 
-      value={this.props.selected_flight} 
+      <h3>Track flight stats</h3>
+      <Dropdown className="flight-dropdown"
+      options={this.options}
+      value={this.props.selected_flight}
       onChange={this.props.handle_flight_change} />
     </div>
     );
+  }
+}
+
+interface GeneralInfoProps {
+  selected_flight : Option;
+  get_flight_info: (flight_id: string) => {duration: number};
+}
+class GeneralInfo extends React.Component<GeneralInfoProps>{
+  constructor(props: GeneralInfoProps){
+    super(props);
+  }
+  render() {
+    flight_info = this.props.get_flight_info(this.selected_flight.value)
+    return (
+      <div className="general-info">
+        Duration of flight: {flight_info.duration}
+      </div>
+    )
   }
 }
 
