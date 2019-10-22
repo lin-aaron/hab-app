@@ -51,6 +51,9 @@
   width: 20vw;
 }
 
+.general-panel {
+  height:100px;
+}
 
 .App-footer {
   flex-shrink: 0;
