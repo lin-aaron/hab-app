@@ -49,10 +49,16 @@
 
 .flight-dropdown {
   width: 20vw;
+  background-color: red;
 }
 
-.general-panel {
+.general-info {
   height:100px;
+  background-color: teal;
+}
+
+.point-info {
+  background-color: turquoise;
 }
 
 .App-footer {
