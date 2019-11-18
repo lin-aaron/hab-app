@@ -77,7 +77,7 @@ class InfoPanel extends React.Component<InfoPanelProps> {
   render() {
     return (
       <div className="info-panel">
-        <h3>Track flight stats</h3>
+        <h3>Track flight status</h3>
         <Dropdown className="flight-dropdown"
           options={this.options}
           value={this.props.selected_flight}
