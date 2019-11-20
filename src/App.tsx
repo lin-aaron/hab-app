@@ -4,6 +4,8 @@ import 'react-dropdown/style.css'
 import logo from './stac_logo.png';
 import './App.css';
 import { isUndefined } from 'util';
+import firebase from 'firebase';
+import 'firebase/firestore'
 
 interface AppState {
   selected_flight: Option,
@@ -20,6 +22,26 @@ class App extends React.Component<{}, AppState> {
 
   handle_flight_change = (option: Option) => {
     this.setState({ selected_flight: option })
+  }
+
+  componentDidMount(){
+    var db = firebase.firestore();
+    var docRef = db.collection("HAB IV Test Flight 1").doc("19-11-11 10:41:50");
+
+    docRef.get().then(function(doc) {
+      if (doc.exists) {
+          //flight_info.append(doc.data());
+          console.log("Document data:", doc.data());
+          // var object = InfoPanel.refs.flight_data;
+          // TO DO: figure out how to reference paragraph objects in react
+      } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
+      }
+  }).catch(function(error) {
+      console.log("Error getting document:", error);
+  });
+
   }
 
   flight_data: { [id: string]: Flight; } = { '1': { duration: 60 }, '2': { duration: 75 }, '3': { duration: 100 } };
@@ -82,6 +104,9 @@ class InfoPanel extends React.Component<InfoPanelProps> {
           options={this.options}
           value={this.props.selected_flight}
           onChange={this.props.handle_flight_change} />
+          <p>Flight Data: {this.state.current_data.altitude}</p>
+          <p id="altitude_data"></p>
+          <p id="heading_data"></p>
         <GeneralInfo selected_flight={this.props.selected_flight} get_flight={this.props.get_flight} />
         <PointInfo selected_point={this.props.selected_point} get_point={this.props.get_point} />
       </div>
