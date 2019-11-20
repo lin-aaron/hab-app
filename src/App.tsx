@@ -24,25 +24,25 @@ class App extends React.Component<{}, AppState> {
     this.setState({ selected_flight: option })
   }
 
-  componentDidMount(){
-    var db = firebase.firestore();
-    var docRef = db.collection("HAB IV Test Flight 1").doc("19-11-11 10:41:50");
-
-    docRef.get().then(function(doc) {
-      if (doc.exists) {
-          //flight_info.append(doc.data());
-          console.log("Document data:", doc.data());
-          // var object = InfoPanel.refs.flight_data;
-          // TO DO: figure out how to reference paragraph objects in react
-      } else {
-          // doc.data() will be undefined in this case
-          console.log("No such document!");
-      }
-  }).catch(function(error) {
-      console.log("Error getting document:", error);
-  });
-
-  }
+  // componentDidMount(){
+  //   var db = firebase.firestore();
+  //   var docRef = db.collection("HAB IV Test Flight 1").doc("19-11-11 10:41:50");
+  //
+  //   docRef.get().then(function(doc) {
+  //     if (doc.exists) {
+  //         //flight_info.append(doc.data());
+  //         console.log("Document data:", doc.data());
+  //         // var object = InfoPanel.refs.flight_data;
+  //         // TO DO: figure out how to reference paragraph objects in react
+  //     } else {
+  //         // doc.data() will be undefined in this case
+  //         console.log("No such document!");
+  //     }
+  // }).catch(function(error) {
+  //     console.log("Error getting document:", error);
+  // });
+  //
+  // }
 
   flight_data: { [id: string]: Flight; } = { '1': { duration: 60 }, '2': { duration: 75 }, '3': { duration: 100 } };
 
@@ -89,9 +89,37 @@ interface InfoPanelProps {
   get_flight: (flight_id: string) => Flight;
   get_point: (point_id: string | undefined) => Point;
 }
-class InfoPanel extends React.Component<InfoPanelProps> {
+interface InfoPanelState {
+  current_data: {altitude: number}
+}
+class InfoPanel extends React.Component<InfoPanelProps, InfoPanelState> {
   constructor(props: InfoPanelProps) {
     super(props);
+
+    this.state = {
+      current_data: {altitude: 0}
+    };
+
+    this.getdata = this.getdata.bind(this);
+  }
+
+  getdata(){
+    var db = firebase.firestore();
+    var docRef = db.collection("HAB IV Test Flight 1").doc("19-11-11 10:41:50");
+
+    docRef.get().then((doc) =>{
+      if (doc.exists) {
+        this.setState({current_data:{altitude:10}}); //doc.data();
+
+          console.log("Document data:", doc.data());
+          //this.flight: doc.data();
+      } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
+      }
+  }).catch(function(error) {
+      console.log("Error getting document:", error);
+  });
   }
 
   options = [{ value: '1', label: 'Current Flight (Live)' }, { value: '2', label: 'HAB III' }, { value: '3', label: 'HAB II' }];
@@ -100,6 +128,7 @@ class InfoPanel extends React.Component<InfoPanelProps> {
     return (
       <div className="info-panel">
         <h3>Track flight status</h3>
+        <button onClick={this.getdata}>Test getdata</button>
         <Dropdown className="flight-dropdown"
           options={this.options}
           value={this.props.selected_flight}
