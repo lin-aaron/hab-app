@@ -24,31 +24,47 @@ class App extends React.Component<{}, AppState> {
     this.setState({ selected_flight: option })
   }
 
-  componentDidMount(){
-    var db = firebase.firestore();
-    var docRef = db.collection("HAB IV Test Flight 1").doc("19-11-11 10:41:50");
 
-    docRef.get().then(function(doc) {
-      if (doc.exists) {
-          //flight_info.append(doc.data());
-          console.log("Document data:", doc.data());
-          // var object = InfoPanel.refs.flight_data;
-          // TO DO: figure out how to reference paragraph objects in react
-      } else {
-          // doc.data() will be undefined in this case
-          console.log("No such document!");
-      }
-  }).catch(function(error) {
-      console.log("Error getting document:", error);
-  });
-
-  }
+  // componentDidMount(){
+  //   var db = firebase.firestore();
+  //   var docRef = db.collection("HAB IV Test Flight 1").doc("19-11-11 10:41:50");
+  //
+  //   docRef.get().then(function(doc) {
+  //     if (doc.exists) {
+  //         //flight_info.append(doc.data());
+  //         console.log("Document data:", doc.data());
+  //         // var object = InfoPanel.refs.flight_data;
+  //         // TO DO: figure out how to reference paragraph objects in react
+  //     } else {
+  //         // doc.data() will be undefined in this case
+  //         console.log("No such document!");
+  //     }
+  // }).catch(function(error) {
+  //     console.log("Error getting document:", error);
+  // });
+  //
+  // }
 
   flight_data: { [id: string]: Flight; } = { '1': { duration: 60 }, '2': { duration: 75 }, '3': { duration: 100 } };
 
   get_flight = (flight_id: string) => {
     return this.flight_data[flight_id];
   }
+
+  //reference to databse service
+  // var database = firebase.database();
+  //
+  // function writePointData(altitude, heading, latitude, longitude, speed, temp){
+  //   database.ref("19-11-11 10:41:50").set({
+  //     altitude: altitude,
+  //     heading: latitude,
+  //     latitude: latitude,
+  //     longitude: longitude,
+  //     speed: speed,
+  //     temp: temp
+  //   });
+  // }
+
 
   get_point = (point_id: string | undefined) => {
     if (isUndefined(point_id)) {
@@ -104,9 +120,8 @@ class InfoPanel extends React.Component<InfoPanelProps> {
           options={this.options}
           value={this.props.selected_flight}
           onChange={this.props.handle_flight_change} />
-          <p>Flight Data: {this.state.current_data.altitude}</p>
-          <p id="altitude_data"></p>
-          <p id="heading_data"></p>
+          // <p id="altitude_data"></p>
+          // <p id="heading_data"></p>
         <GeneralInfo selected_flight={this.props.selected_flight} get_flight={this.props.get_flight} />
         <PointInfo selected_point={this.props.selected_point} get_point={this.props.get_point} />
       </div>
