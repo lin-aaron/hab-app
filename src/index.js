@@ -29,21 +29,21 @@ ReactDOM.render(<App />, document.getElementById('root'));
 // Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.unregister();
 
-var db = firebase.firestore();
-var docRef = db.collection("HAB IV Test Flight 1").doc("19-11-11 10:41:50");
-
-docRef.get().then(function(doc) {
-  if (doc.exists) {
-      //flight_info.append(doc.data());
-      console.log("Document data:", doc.data());
-
-      document.getElementById("altitude_data").innerHTML = "Altitude: " + doc.data().altitude;
-      document.getElementById("heading_data").innerHTML = "Heading: " + doc.data().heading;
-      // var object = InfoPanel.refs.flight_data;
-  } else {
-      // doc.data() will be undefined in this case
-      console.log("No such document!");
-  }
-}).catch(function(error) {
-  console.log("Error getting document:", error);
-});
+// var db = firebase.firestore();
+// var docRef = db.collection("HAB IV Test Flight 1").doc("19-11-11 10:41:50");
+//
+// docRef.get().then(function(doc) {
+//   if (doc.exists) {
+//       //flight_info.append(doc.data());
+//       console.log("Document data:", doc.data());
+//
+//       document.getElementById("altitude_data").innerHTML = "Altitude: " + doc.data().altitude;
+//       document.getElementById("heading_data").innerHTML = "Heading: " + doc.data().heading;
+//       // var object = InfoPanel.refs.flight_data;
+//   } else {
+//       // doc.data() will be undefined in this case
+//       console.log("No such document!");
+//   }
+// }).catch(function(error) {
+//   console.log("Error getting document:", error);
+// });
