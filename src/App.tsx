@@ -10,7 +10,7 @@ import 'firebase/firestore'
 interface AppState {
   selected_flight: Option,
   selected_point?: string,
-  current_information?: any
+  current_information: any[]
 }
 class App extends React.Component<{}, AppState> {
   constructor() {
@@ -18,86 +18,100 @@ class App extends React.Component<{}, AppState> {
     this.state = {
       selected_flight: { value: '1', label: 'Current Flight (Live)' },
       selected_point: undefined,
-      current_information: undefined,
+      current_information: [],
     }
   }
 
+  get_currentinfo = (option: string) => {
+    var currentinfo: Array<any> = [];
+    var db = firebase.firestore();
+    db.collection(option).get().then(function(querySnapshot){
+      querySnapshot.forEach(function(doc){
+        console.log(doc.data());
+        currentinfo.push(doc.data());
+      });
+    });
+    console.log(currentinfo);
+    return currentinfo;
+  }
+
   handle_flight_change = (option: Option) => {
-    this.setState({ selected_flight: option })
+    this.setState({ selected_flight: option, current_information: this.get_currentinfo(option.value) })
 
-    var db = firebase.firestore();
-    var docRef = db.collection("HAB IV Test Flight 1").doc("19-11-11 10:41:50");
 
-    docRef.get().then(function(doc) {
-      if (doc.exists) {
-          //flight_info.append(doc.data());
-          console.log("Document data:", doc.data());
-          // var object = InfoPanel.refs.flight_data;
-          // TO DO: figure out how to reference paragraph objects in react
-      } else {
-          // doc.data() will be undefined in this case
-          console.log("No such document!");
-      }
-  }).catch(function(error) {
-      console.log("Error getting document:", error);
-  });
+  //   var db = firebase.firestore();
+  //   var docRef = db.collection("HAB IV Test Flight 1").doc("19-11-11 10:41:50");
+  //
+  //   docRef.get().then(function(doc) {
+  //     if (doc.exists) {
+  //         //flight_info.append(doc.data());
+  //         console.log("Document data:", doc.data());
+  //         // var object = InfoPanel.refs.flight_data;
+  //         // TO DO: figure out how to reference paragraph objects in react
+  //     } else {
+  //         // doc.data() will be undefined in this case
+  //         console.log("No such document!");
+  //     }
+  // }).catch(function(error) {
+  //     console.log("Error getting document:", error);
+  // });
   }
 
 
-  componentDidMount(){
-    var db = firebase.firestore();
-    var docRef = db.collection("HAB IV Test Flight 1").doc("19-11-11 10:41:50");
+  // componentDidMount(){
+  //   var db = firebase.firestore();
+  //   var docRef = db.collection("HAB IV Test Flight 1").doc("19-11-11 10:41:50");
+  //
+  //   docRef.get().then(function(doc) {
+  //     if (doc.exists) {
+  //         //flight_info.append(doc.data());
+  //         console.log("Document data:", doc.data());
+  //         // var object = InfoPanel.refs.flight_data;
+  //         // TO DO: figure out how to reference paragraph objects in react
+  //     } else {
+  //         // doc.data() will be undefined in this case
+  //         console.log("No such document!");
+  //     }
+  // }).catch(function(error) {
+  //     console.log("Error getting document:", error);
+  // });
+  //
+  // }
 
-    docRef.get().then(function(doc) {
-      if (doc.exists) {
-          //flight_info.append(doc.data());
-          console.log("Document data:", doc.data());
-          // var object = InfoPanel.refs.flight_data;
-          // TO DO: figure out how to reference paragraph objects in react
-      } else {
-          // doc.data() will be undefined in this case
-          console.log("No such document!");
-      }
-  }).catch(function(error) {
-      console.log("Error getting document:", error);
-  });
-
-  }
-
-  flight_data: { [id: string]: Flight; } = { '1': { duration: 60 }, '2': { duration: 75 }, '3': { duration: 100 } };
-
-  get_flight = (flight_id: string) => {
-    return this.flight_data[flight_id];
-  }
+  // flight_data: { [id: string]: Flight; } = { '1': { duration: 60 }, '2': { duration: 75 }, '3': { duration: 100 } };
+  //
+  // get_flight = (flight_id: string) => {
+  //   return this.flight_data[flight_id];
+  // }
 
 
   get_point = (point_id: string | undefined) => {
-  //
-  //
-  //   if (isUndefined(point_id)) {
-  //     return ({
-  //       timestamp: new Date(0), heading: -1, altitude: -1 });
-  //   }
-  //   update_point = (DataSnapshot snapshot) => {
-  //     return({
-  //       heading: snapshot.heading,
-  //       altitude: snapshot.altitude
-  //     });
-  //   }
-  //
-  //   var database = firebase.database().ref('HAB IV Test Flight 1');
-  //   database.on('value', function(snapshot){
-  //     console.log(snapshot.val())
-  //     update_point(snapshot.val())
-  //   });
-  //
-    return (
-      {
-        timestamp: new Date(Date.now()), heading: 246, altitude: 135
-        //timestamp: new Date(Date.now()), heading
-      }
-    );
+    console.log(typeof this.state.current_information);
+    var currentinfo = this.state.current_information;
+    // if (currentinfo == undefined){
+    if (currentinfo != undefined) console.log(currentinfo.length);
+      return (
+        {
+          timestamp: new Date(Date.now()), heading: 0 , altitude: 0
+        }
+      );
+    // }
+
+    // return (
+    //   {
+    //     timestamp: new Date(Date.now()), heading: currentinfo[currentinfo.length-1].heading , altitude: currentinfo[currentinfo.length-1].altitude
+    //   }
+    // );
   }
+
+  // get_point = (option: Option) => {
+  //
+  //   return (
+  //     {
+  //       timestamp: new Date(Date.now()), heading: 246, altitude: 135
+  //     }
+  //   );
+  // }
 
   render() {
     return (
@@ -108,7 +122,7 @@ class App extends React.Component<{}, AppState> {
         </header>
         <div className="App-wrapper">
           <MapPanel selected_flight={this.state.selected_flight} />
-          <InfoPanel selected_flight={this.state.selected_flight} selected_point={this.state.selected_point} handle_flight_change={this.handle_flight_change} get_flight={this.get_flight} get_point={this.get_point} />
+          <InfoPanel selected_flight={this.state.selected_flight} selected_point={this.state.selected_point} handle_flight_change={this.handle_flight_change} get_point={this.get_point} />
         </div>
         <footer className="App-footer">Built by <a href="https://stac.berkeley.edu">Space Technologies at Cal</a>, 2019</footer>
       </div>
@@ -129,7 +143,7 @@ interface InfoPanelProps {
   selected_flight: Option;
   selected_point?: string;
   handle_flight_change: (option: Option) => void;
-  get_flight: (flight_id: string) => Flight;
+  //get_flight: (flight_id: string) => Flight;
   get_point: (point_id: string | undefined) => Point;
 }
 class InfoPanel extends React.Component<InfoPanelProps> {
@@ -158,12 +172,10 @@ class InfoPanel extends React.Component<InfoPanelProps> {
       <div className="info-panel">
         <h3>Track flight status</h3>
         <Dropdown className="flight-dropdown"
-          options={this.get_options()}
+          options={this.options}
           value={this.props.selected_flight}
           onChange={this.props.handle_flight_change} />
-          // <p id="altitude_data"></p>
-          // <p id="heading_data"></p>
-        <GeneralInfo selected_flight={this.props.selected_flight} get_flight={this.props.get_flight} />
+        <GeneralInfo selected_flight={this.props.selected_flight}/>
         <PointInfo selected_point={this.props.selected_point} get_point={this.props.get_point} />
       </div>
     );
@@ -172,18 +184,16 @@ class InfoPanel extends React.Component<InfoPanelProps> {
 
 interface GeneralInfoProps {
   selected_flight: Option;
-  get_flight: (flight_id: string) => Flight;
+  //get_flight: (flight_id: string) => Flight;
 }
 class GeneralInfo extends React.Component<GeneralInfoProps>{
   constructor(props: GeneralInfoProps) {
     super(props);
   }
   render() {
-    const flight = this.props.get_flight(this.props.selected_flight.value)
+    //const flight = this.props.get_flight(this.props.selected_flight.value)
     return (
-      <div className="general-info">
-        <p>Duration of flight: {flight.duration}</p>
-      </div>
+      <div className="general-info">      </div>
     )
   }
 }
