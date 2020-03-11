@@ -22,7 +22,7 @@ class App extends React.Component<{}, AppState> {
     }
   }
 
-  get_currentinfo = (option: string) => {
+  get_currentinfo = async (option: string) => {
     var currentinfo: Array<any> = [];
     var db = firebase.firestore();
     db.collection(option).get().then(function(querySnapshot){
@@ -36,7 +36,14 @@ class App extends React.Component<{}, AppState> {
   }
 
   handle_flight_change = (option: Option) => {
-    this.setState({ selected_flight: option, current_information: this.get_currentinfo(option.value) })
+    var currentinfo: Array<any> = [];
+    var promise = this.get_currentinfo(option.value).then(console.log);
+    Promise.resolve(promise);
+//     Promise.all([promise]).then(function(values) {
+//   console.log(values);
+// });
+
+    this.setState({ selected_flight: option, current_information: [], selected_point: "ihi" });
 
 
   //   var db = firebase.firestore();
@@ -89,6 +96,7 @@ class App extends React.Component<{}, AppState> {
     console.log(typeof this.state.current_information);
     var currentinfo = this.state.current_information;
     // if (currentinfo == undefined){
+    currentinfo.forEach(elem=> console.log(elem));
     if (currentinfo != undefined) console.log(currentinfo.length);
       return (
         {
